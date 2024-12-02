@@ -35,8 +35,12 @@ def reduce_one_group(key, group):
         #     print(f"Skipping malformed line: {line}")
         #     continue  # Skip malformed lines
         doc_id, rest = line.split("\t")
-        term, tf_idf, tf_ik = rest.split()
+        term, idf_k, tf_ik = rest.split()
+        tf_idf = float(tf_ik) * float(idf_k)
+
+
         normalization_factor += math.pow(float(tf_idf), 2)
+
 
 
     for line in group: 

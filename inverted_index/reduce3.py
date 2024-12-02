@@ -15,43 +15,54 @@ Template reducer.
 
 https://github.com/eecs485staff/madoop/blob/main/README_Hadoop_Streaming.md
 """
+# tf_idf = {}
 
 def reduce_one_group(key, group):
     """Reduce one group."""
 
+    # print("group")
+
     with open("total_document_count.txt", 'r', encoding="utf-8") as f:
         collection_size = int(f.read().strip())
     
-    
-    doc_list = []  # Temporary list to hold document data for the term
+    # print(f"key: {key}")
+    # doc_list = []  # Temporary list to hold document data for the term
+    group_list = list(group)
+    nk = len(group_list)
+    # print(f"nk: {nk}")
+    idf_k = math.log10(float(collection_size)/float(nk))
+    # print(f"idfk: {idf_k}")
+
 
     # Process each line in the group
-    for line in group:
+    for line in group_list:
+        # print("hi")
         if not line.strip():  # Skip empty lines
             continue
+        # print("line: ")
         # print(line)
         term, rest = line.split("\t")  # Split term and the rest
         doc_id, tf_ik = rest.split()  # Split rest into doc_id and tf_ik
 
         # Add document data to the list
-        doc_list.append({"doc_id": doc_id, "tf_ik": float(tf_ik)})
+        # doc_list.append({"doc_id": doc_id, "tf_ik": float(tf_ik)})
 
     # Store the term's data in the global dictionary
     # values[key] = doc_list
 
     # for key, doc_list in values.items(): 
-        nk = len(doc_list)
-        idf_k = math.log10(float(collection_size)/float(nk))
+        # nk = len(doc_list)
+        # idf_k = math.log10(float(collection_size)/float(nk))
    
         # normalization_factor = 0
         # for doc in doc_list:
         # tf_ik = doc["tf_ik"]
-        tf_idf = float(tf_ik) * float(idf_k)
+        # tf_idf = float(tf_ik) * float(idf_k)
             # normalization_factor += tf_idf ** 2
 
             # print(f"{key}\t{doc['doc_id']} {tf_idf} {tf_ik} {normalization_factor}")
         
-        print(f"{doc_id}\t{term} {tf_idf} {tf_ik}")
+        print(f"{doc_id}\t{term} {idf_k} {tf_ik}")
 
 
 def keyfunc(line):
