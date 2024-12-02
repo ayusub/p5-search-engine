@@ -1,7 +1,6 @@
 #!/usr/bin/env -S python3 -u
 """Map 3: Calculate Everything Else."""
 import sys
-import math
 
 # JOB 3: tf-idf score, doc_id, tf fin doc, ....
 # input: term : doc_id frequency

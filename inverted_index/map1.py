@@ -6,9 +6,6 @@ import hashlib
 import bs4
 
 
-
-# Parse one HTML document at a time.  Note that this is still O(1) memory
-# WRT the number of documents in the dataset.
 HTML = ""
 for line in sys.stdin:
     # Assume well-formed HTML docs:
@@ -26,7 +23,7 @@ for line in sys.stdin:
 
     # Configure Beautiful Soup parser
     soup = bs4.BeautifulSoup(HTML, "html.parser")
-
+    
     # Get docid from document
     doc_id = soup.find("meta", attrs={"eecs485_docid": True}).get("eecs485_docid")
 
@@ -40,6 +37,5 @@ for line in sys.stdin:
     
     # Map 1 output.  Emit one line for each document, including the doc
     # ID and document content (You will need them later!)
-
     print(f"{doc_id}\t{content}")
     HTML = ""

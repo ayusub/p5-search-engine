@@ -18,30 +18,16 @@ https://github.com/eecs485staff/madoop/blob/main/README_Hadoop_Streaming.md
 
 def reduce_one_group(key, group):
     """Reduce one group."""
-    # num_docs = len(group)
 
-    # term, rest = line.split("\t")
-    # doc_id, tf_ik = rest.split()
-    # values[key] = {num_docs, doc_id}
-   
-
-        
-    # # term k
-    #     k = key.split()[0]
-    #     # doc id 
-    #     doc_id = key.split()[1]
-    #     # print something here ? 
-    #     # tf(ik) = k frequency in i
-    #             # num_docs = terms[k] + 1
-
-    #             # terms[k] += tf_ik, num_docs[k]`
-    #     print(f"{term}\t{doc_id} {tf_ik}")
-
-    # # n(k) = number of docs with k
+    with open("total_document_count.txt", 'r', encoding="utf-8") as f:
+        collection_size = int(f.read().strip())
+    
+    
     doc_list = []  # Temporary list to hold document data for the term
 
     # Process each line in the group
     for line in group:
+        # print(line)
         term, rest = line.split("\t")  # Split term and the rest
         doc_id, tf_ik = rest.split()  # Split rest into doc_id and tf_ik
 
@@ -51,11 +37,18 @@ def reduce_one_group(key, group):
     # Store the term's data in the global dictionary
     values[key] = doc_list
 
-    # Example output (can be modified as needed):
-    # Print term, doc_id, tf_ik for debugging or intermediate output
-    for doc in doc_list:
-        print(f"{key}\t{doc['doc_id']} {doc['tf_ik']}")
-    
+    for key, doc_list in values.items(): 
+        nk = len(doc_list)
+        idf_k = math.log10(collection_size/nk)
+   
+        normalization_factor = 0
+        for doc in doc_list:
+            tf_ik = doc["tf_ik"]
+            tf_idf = tf_ik * idf_k
+            normalization_factor += tf_idf ** 2
+
+            print(f"{key}\t{doc['doc_id']} {tf_idf} {tf_ik} {normalization_factor}")
+ 
 
 
 def keyfunc(line):
@@ -65,31 +58,32 @@ def keyfunc(line):
 
 def main():
     """Divide sorted lines into groups that share a key."""
+    # print("hi3")
+
     for key, group in itertools.groupby(sys.stdin, keyfunc):
         reduce_one_group(key, group)
 
     # N = size of collection 
     # get from output file from pipeline or smth 
-    with open("total_document_count.txt", 'r', encoding="utf-8") as f:
-        collection_size = int(f.read().strip())
+    # with open("total_document_count.txt", 'r', encoding="utf-8") as f:
+    #     collection_size = int(f.read().strip())
     
-    for key, doc_list in values.items(): 
-        nk = len(doc_list)
-        idf_k = math.log10(collection_size/nk)
+    # for key, doc_list in values.items(): 
+    #     nk = len(doc_list)
+    #     idf_k = math.log10(collection_size/nk)
    
-        normalization_factor = 0
-        for doc in doc_list:
-            tf_ik = doc["tf_ik"]
-            w_ik = idf_k * tf_ik
-            tf_idf = tf_ik * idf_k
-            normalization_factor += tf_idf ** 2
+    #     normalization_factor = 0
+    #     for doc in doc_list:
+    #         tf_ik = doc["tf_ik"]
+    #         tf_idf = tf_ik * idf_k
+    #         normalization_factor += tf_idf ** 2
 
-            print(f"{key}\t{doc['doc_id']} {w_ik} {tf_ik} {normalization_factor}")
+    #         print(f"{key}\t{doc['doc_id']} {tf_idf} {tf_ik} {normalization_factor}")
 
     
 
 
-if __name__ == "_main__":
+if __name__ == "__main__":
     main()
 
 
