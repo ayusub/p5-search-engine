@@ -27,6 +27,8 @@ def reduce_one_group(key, group):
 
     # Process each line in the group
     for line in group:
+        if not line.strip():  # Skip empty lines
+            continue
         # print(line)
         term, rest = line.split("\t")  # Split term and the rest
         doc_id, tf_ik = rest.split()  # Split rest into doc_id and tf_ik
@@ -35,20 +37,21 @@ def reduce_one_group(key, group):
         doc_list.append({"doc_id": doc_id, "tf_ik": float(tf_ik)})
 
     # Store the term's data in the global dictionary
-    values[key] = doc_list
+    # values[key] = doc_list
 
-    for key, doc_list in values.items(): 
+    # for key, doc_list in values.items(): 
         nk = len(doc_list)
-        idf_k = math.log10(collection_size/nk)
+        idf_k = math.log10(float(collection_size)/float(nk))
    
-        normalization_factor = 0
-        for doc in doc_list:
-            tf_ik = doc["tf_ik"]
-            tf_idf = tf_ik * idf_k
-            normalization_factor += tf_idf ** 2
+        # normalization_factor = 0
+        # for doc in doc_list:
+        # tf_ik = doc["tf_ik"]
+        tf_idf = float(tf_ik) * float(idf_k)
+            # normalization_factor += tf_idf ** 2
 
-            print(f"{key}\t{doc['doc_id']} {tf_idf} {tf_ik} {normalization_factor}")
- 
+            # print(f"{key}\t{doc['doc_id']} {tf_idf} {tf_ik} {normalization_factor}")
+        
+        print(f"{doc_id}\t{term} {tf_idf} {tf_ik}")
 
 
 def keyfunc(line):
@@ -59,6 +62,9 @@ def keyfunc(line):
 def main():
     """Divide sorted lines into groups that share a key."""
     # print("hi3")
+    # for key, group in itertools.groupby(sys.stdin, keyfunc):
+    #     for line in group: 
+    #         print(line)
 
     for key, group in itertools.groupby(sys.stdin, keyfunc):
         reduce_one_group(key, group)

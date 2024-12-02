@@ -20,6 +20,7 @@ def reduce_one_group(key, group):
 
         # Append document-specific details to the term's list
         term_data[term].append((doc_id, tf, norm, idf))
+        # print(f"{term} {term_data[term]}")
 
     # Process and output results for each term
     for term in sorted(term_data.keys()):  # Sort terms lexicographically
@@ -39,8 +40,21 @@ def keyfunc(line):
 def main():
     """Divide sorted lines into groups that share a key."""
     for key, group in itertools.groupby(sys.stdin, keyfunc):
-        reduce_one_group(key, group)
-
+        # print("key: ")
+        # print(key)
+        count = 0; 
+        print("group: ")
+        print(count)
+        count += 1
+        for line in group:
+            # Strip leading/trailing whitespace from each line
+            line = line.strip()
+            
+            # Skip empty lines (if any)
+            if line:
+                print(line)
+    # for key, group in itertools.groupby(sys.stdin, keyfunc):
+    #     reduce_one_group(key, group)
 
 if __name__ == "__main__":
     main()
