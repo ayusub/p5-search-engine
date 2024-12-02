@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Map 1."""
-
+# NO HASH 
 import sys
 import hashlib
 import bs4
 
-ALGORITHM = 'sha512'
+
 
 # Parse one HTML document at a time.  Note that this is still O(1) memory
 # WRT the number of documents in the dataset.
@@ -38,13 +38,8 @@ for line in sys.stdin:
     # Remove extra newlines
     content = content.replace("\n", "")
     
-    # FIXME Map 1 output.  Emit one line for each document, including the doc
+    # Map 1 output.  Emit one line for each document, including the doc
     # ID and document content (You will need them later!)
-    hash_obj = hashlib.new(ALGORITHM)
-    hash_obj.update(content.encode("utf-8"))
-    doc_id = hash_obj.hexdigest()
-    # Mod by 10^7 to limit the length of the doc_id
-    doc_id = int(doc_id, 16) % (10**7)
 
     print(f"{doc_id}\t{content}")
     HTML = ""

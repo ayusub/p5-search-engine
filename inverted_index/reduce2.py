@@ -15,7 +15,7 @@ def reduce_one_group(key, group):
 
     # Emit term, doc_id, and TF
     term, doc_id = key.split()
-    print(f"{term} {doc_id}\t{tf}")
+    print(f"{term}\t{doc_id} {tf}")
 
 def keyfunc(line):
     """
