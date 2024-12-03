@@ -70,4 +70,5 @@ madoop \
   -input output4 \
   -output output \
   -mapper ./map5.py \
-  -reducer ./reduce5.py
+  -reducer ./reduce5.py \
+  -partitioner ./partition.py \

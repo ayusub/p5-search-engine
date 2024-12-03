@@ -13,6 +13,7 @@ def reduce_one_group(key, group):
     content = " ".join(line.partition("\t")[2].strip() for line in group)
     print(f"{key}\t{content}")
 
+
 def keyfunc(line):
     """Return the key from a TAB-delimited key-value pair."""
     return line.partition("\t")[0]
