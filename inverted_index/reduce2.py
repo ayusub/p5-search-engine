@@ -10,20 +10,24 @@ def reduce_one_group(key, group):
     """
     Reduce one group: Compute term frequency (TF) for a single (term, doc_id).
     """
-    # Sum the counts for this group
-    tf = sum(int(line.split("\t")[2]) for line in group)
+    word_count = {}
 
-    # Emit term, doc_id, and TF
-    term, doc_id = key.split()
-    print(f"{term}\t{doc_id} {tf}")
+    for line in group:
+        doc_id, word = line.strip().split("\t")  # Split term and the rest 
+        if line in word_count:
+            word_count[word] += 1; 
+        else: 
+            word_count[word] = 1; 
+            
+    for x, count in word_count.items(): 
+        print(f"{x}\t{key} {count}")
+
 
 def keyfunc(line):
     """
     Extract key (term and doc_id) from the mapper output.
     """
-    # Combine term and doc_id as the key
-    parts = line.strip().split("\t")
-    return f"{parts[1]} {parts[0]}"
+    return line.partition("\t")[0]
 
 def main():
     """
@@ -31,6 +35,7 @@ def main():
     """
     for key, group in itertools.groupby(sys.stdin, keyfunc):
         reduce_one_group(key, group)
+
 
 if __name__ == "__main__":
     main()

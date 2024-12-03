@@ -23,4 +23,4 @@ for line in sys.stdin:
             word = re.sub(r"[^a-zA-Z0-9 ]+", "", word)
             if word not in stopwords:
                 # Emit doc_id, word, and a count of 1
-                print(f"{doc_id}\t{word}\t1")
+                print(f"{doc_id}\t{word}")
