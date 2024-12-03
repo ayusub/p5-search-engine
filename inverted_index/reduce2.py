@@ -13,8 +13,8 @@ def reduce_one_group(key, group):
     word_count = {}
 
     for line in group:
-        doc_id, word = line.strip().split("\t")  # Split term and the rest 
-        if line in word_count:
+        doc_id, word = line.strip().split("\t")   
+        if word in word_count:
             word_count[word] += 1; 
         else: 
             word_count[word] = 1; 
