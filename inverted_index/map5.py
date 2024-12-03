@@ -2,9 +2,9 @@
 """Map 4: Segment."""
 
 import sys
-import logging
+# import logging
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 for line in sys.stdin:
     split = line.rstrip().split("\t")
@@ -17,7 +17,7 @@ for line in sys.stdin:
     doc_id = rest.split()[0].strip()
     # Calculate the partition key
     partition_key = int(doc_id) % 3
-    logging.debug("key %d", partition_key)
+    # logging.debug("key %d", partition_key)
 
     # Print the partition key and the modified value
     print(f"{partition_key}\t{term}\t{rest}")

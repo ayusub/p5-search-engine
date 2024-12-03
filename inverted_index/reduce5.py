@@ -3,9 +3,9 @@
 
 import sys
 import itertools
-import logging
+# import logging
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 def reduce_one_group(__, group):
     """Reduce one group."""
