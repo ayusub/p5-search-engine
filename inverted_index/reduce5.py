@@ -7,6 +7,7 @@ import itertools
 
 # logging.basicConfig(level=logging.DEBUG)
 
+
 def reduce_one_group(__, group):
     """Reduce one group."""
     term_data = {}
