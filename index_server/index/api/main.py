@@ -65,11 +65,7 @@ def get_hits():
     query = flask.request.args.get("q", type=str)
     weight = flask.request.args.get("w", type=float, default=0.5)
 
-    terms = query.split()
-    for term in terms:
-        term = re.sub(r"[^a-zA-Z0-9 ]+", "", term)
-        term = term.casefold()
-        
+    terms = [re.sub(r"[^a-zA-Z0-9]+", "", term).casefold() for term in query.split()]
     # clean query with stop words and inverted index ; TODO: write load funciton
     terms = [term for term in terms if term not in stopwords] #fix later
     print("cleaned query", file=sys.stderr)
