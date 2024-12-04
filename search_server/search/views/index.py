@@ -3,8 +3,8 @@ import threading
 import heapq
 import flask
 from flask import request
-import search
 import requests
+import search
 
 
 @search.app.route("/", methods=["GET"])

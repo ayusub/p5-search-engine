@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-import bs4
+"""Search script."""
 import os
 import sqlite3
+import bs4
 
-input_directory = 'inverted_index/crawl/'
-output_database = 'var/search.sqlite3'
 
-output_dir = os.path.dirname(output_database)
+INPUT_DIRECTORY = 'inverted_index/crawl/'
+OUTPUT_DATABASE = 'var/search.sqlite3'
+
+output_dir = os.path.dirname(OUTPUT_DATABASE)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
-conn = sqlite3.connect(output_database)
+conn = sqlite3.connect(OUTPUT_DATABASE)
 cursor = conn.cursor()
 
 def create_table():
@@ -36,8 +38,8 @@ def get_summary(soup):
     return summary
 
 def add_data():
-    for filename in os.listdir(input_directory):
-        file_path = os.path.join(input_directory, filename)
+    for filename in os.listdir(INPUT_DIRECTORY):
+        file_path = os.path.join(INPUT_DIRECTORY, filename)
         with open(file_path, 'r', encoding='utf-8') as file:
             HTML = file.read()
             soup = bs4.BeautifulSoup(HTML, "html.parser")
@@ -50,7 +52,6 @@ def add_data():
             INSERT INTO documents (docid, title, summary, url)
             VALUES (?, ?, ?, ?)
             ''', (doc_id, title, summary, url))
-            
             conn.commit()
 
 create_table()

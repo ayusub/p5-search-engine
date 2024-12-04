@@ -65,13 +65,13 @@ def get_hits():
     weight = flask.request.args.get("w", type=float, default=0.5)
 
     terms = query.split()
-    for term in terms:
-        term = re.sub(r"[^a-zA-Z0-9 ]+", "", term)
-        term = term.casefold()
-        
-    # clean query with stop words and inverted index ; TODO: write load funciton
-    terms = [term for term in terms if term not in stopwords] #fix later
-    print("cleaned query", file=sys.stderr)
+    terms = [
+        re.sub(r"[^a-zA-Z0-9]+", "", term).casefold()
+        for term in terms if re.sub(r"[^a-zA-Z0-9]+", "", term).strip()
+    ]
+    terms = [term for term in terms if term not in stopwords]
+    # print(f"Filtered terms: {terms}", file=sys.stderr)
+    # print(f"Stopwords loaded: {stopwords}", file=sys.stderr)
     if not all(term in inverted_index for term in terms):
         print("ERROR: terms not in inverted index", file=sys.stderr)
         return flask.jsonify({"hits": []})
@@ -123,3 +123,25 @@ def calc_cosine_similarity(query_vector, doc_vector):
     """Compute the cosine similarity between query and document vectors."""
     # print("cos", file=sys.stderr)
     return sum(q * d for q, d in zip(query_vector, doc_vector))
+
+
+def calculate_scores(terms, documents, weight):
+    """Calculate scores for relevant documents."""
+    query_vector = calculate_query_vector(terms)
+    doc_nf = {
+        doc_id: math.sqrt(inverted_index[term]["docs"][doc_id]["norm"])
+        for term in terms for doc_id in inverted_index[term]["docs"]
+    }
+
+    hits = []
+    for doc_id in documents:
+        doc_vector = calculate_doc_vector(doc_id, terms)
+        dot_product = calc_cosine_similarity(query_vector, doc_vector)
+        query_nf = math.sqrt(sum(pow(term, 2) for term in query_vector))
+        tf_idf_score = dot_product / (abs(query_nf) * abs(doc_nf[doc_id]))
+        rank = pagerank.get(doc_id, 0)
+        final_score = (weight * rank) + ((1 - weight) * tf_idf_score)
+        hits.append({"docid": int(doc_id), "score": final_score})
+
+    hits.sort(key=lambda x: x["score"], reverse=True)
+    return hits[:10]
